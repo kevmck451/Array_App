@@ -1,15 +1,11 @@
 
-import Mic_Array.array_config as array_config
 
 
 import numpy as np
 from scipy.signal import resample
 
 
-def downsample(data, target_sample_rate=12000, multiCh=True):
-    current_sample_rate = array_config.sample_rate
-    if target_sample_rate >= current_sample_rate:
-        raise ValueError("Target sample rate must be less than current sample rate.")
+def downsample(data, current_sample_rate, target_sample_rate=12000, multiCh=True):
 
     def downsample_data(data, current_rate, target_rate):
         num_samples = int(len(data) * target_rate / current_rate)

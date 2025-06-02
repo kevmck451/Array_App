@@ -1,6 +1,6 @@
 
-from Application.engine.array.AudioReceiver import AudioReceiver_MicArray
-from Application.engine.filters.save_to_wav import save_to_wav
+from engine.array.AudioReceiver import AudioReceiver_MicArray
+from engine.filters.save_to_wav import save_to_wav
 
 from datetime import datetime
 from threading import Thread

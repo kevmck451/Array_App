@@ -1,7 +1,7 @@
 
 
 
-from Application.controller.event_states import Event
+from controller.event_states import Event
 
 import customtkinter as ctk
 from PIL import ImageTk

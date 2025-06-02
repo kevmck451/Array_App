@@ -1,5 +1,5 @@
 
-from Application.engine.detectors.anomaly_filter import Anomaly_Filter
+from engine.detectors.anomaly_filter import Anomaly_Filter
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.figure import Figure

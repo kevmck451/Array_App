@@ -1,6 +1,6 @@
 
-from Application.controller.event_states import Event
-from Application.controller.event_states import State
+from controller.event_states import Event
+from controller.event_states import State
 
 from dataclasses import dataclass
 import threading

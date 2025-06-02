@@ -1,6 +1,6 @@
 # Config file for Array: Rectangular
 
-from Application.engine.array.BeamMixConfig import BeamMixConfig
+from engine.array.BeamMixConfig import BeamMixConfig
 
 sample_rate = 48000
 

@@ -1,11 +1,11 @@
 
 
-from Application.engine.filters.noise_reduction_array import noise_reduction_filter
-from Application.engine.filters.high_pass_array import high_pass_filter
-from Application.engine.filters.low_pass_array import low_pass_filter
-from Application.engine.filters.normalize import normalize
-from Application.engine.filters.down_sample import downsample
-from Application.engine.filters.scale import scale
+from engine.filters.noise_reduction_array import noise_reduction_filter
+from engine.filters.high_pass_array import high_pass_filter
+from engine.filters.low_pass_array import low_pass_filter
+from engine.filters.normalize import normalize
+from engine.filters.down_sample import downsample
+from engine.filters.scale import scale
 
 
 
@@ -16,7 +16,7 @@ import numpy as np
 
 
 class Processing:
-    def __init__(self):
+    def __init__(self, sample_rate):
 
         '''
         Noise Reduction: { 'nr' : std_threshold }
@@ -37,6 +37,7 @@ class Processing:
         self.bottom_cutoff_frequency = None
         self.norm_percent = None
         self.new_sample_rate = None
+        self.current_sample_rate = sample_rate
 
         self.queue = Queue()
 
@@ -53,15 +54,15 @@ class Processing:
         for process in self.processing_chain:
             if process == 'nr':
                 # print(f'Noise Reduction ({process})\t|\tSTD: {self.processing_chain[process]}')
-                new_data = noise_reduction_filter(new_data, self.processing_chain[process])
+                new_data = noise_reduction_filter(new_data, self.current_sample_rate, self.processing_chain[process])
 
             elif process == 'lp':
                 # print(f'High Pass ({process})      \t|\tBC: {self.processing_chain[process]} Hz')
-                new_data = low_pass_filter(new_data, self.processing_chain[process])
+                new_data = low_pass_filter(new_data, self.current_sample_rate, self.processing_chain[process])
                 # new_data = low_pass_filter(new_data, self.processing_chain[process], order=8)
 
             elif process == 'hp':
-                new_data = high_pass_filter(new_data, self.processing_chain[process])
+                new_data = high_pass_filter(new_data, self.current_sample_rate, self.processing_chain[process])
                 # new_data = high_pass_filter(new_data, self.processing_chain[process], order=8)
 
                 # print(f'HP Max: {np.max(new_data)}')
@@ -76,7 +77,7 @@ class Processing:
 
             elif process == 'ds':
                 # print(f'Down Sampling ({process})  \t|\tSR: {self.processing_chain[process]} Hz')
-                new_data = downsample(new_data, self.processing_chain[process])
+                new_data = downsample(new_data, self.current_sample_rate, self.processing_chain[process])
 
                 # print(f'DS Max: {np.max(new_data)}')
                 # print(f'DS min: {np.min(new_data)}')

@@ -1,7 +1,7 @@
 
 
-from Application.engine.beamform.time_delays import calculate_time_delays
-from Application.engine.beamform.fir_filter import create_fir_filters
+from engine.beamform.time_delays import calculate_time_delays
+from engine.beamform.fir_filter import create_fir_filters
 
 from concurrent.futures import ThreadPoolExecutor
 from scipy.signal import convolve

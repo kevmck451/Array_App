@@ -5,7 +5,6 @@ from pathlib import Path
 import soundfile as sf
 import numpy as np
 import librosa
-import wave
 import os
 
 
@@ -112,22 +111,7 @@ class Audio:
 
         return channel_stats
 
-    # Function to export an object
-    # def export(self, **kwargs):
-    #     filepath = kwargs.get('filepath', None)
-    #     name = kwargs.get('name', self.name)
-    #     # Save/export the audio object
-    #     if filepath is not None:
-    #         if Path(name).suffix != '.wav':
-    #             filepath = f'{filepath}/{name}.wav'
-    #         else: filepath = f'{filepath}/{name}'
-    #         sf.write(f'{filepath}', self.data, self.sample_rate)
-    #     else:
-    #         if self.path is not None:
-    #             sf.write(f'{str(self.path)}', self.data, self.sample_rate)
-    #         else:
-    #             sf.write(f'{name}_export.wav', self.data, self.sample_rate)
-
+    # Function to export
     def export(self, **kwargs):
         filepath = kwargs.get('filepath', None)
         name = kwargs.get('name', self.name)

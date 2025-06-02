@@ -1,18 +1,17 @@
 
-import Mic_Array.array_config as array_config
 
 import noisereduce as nr
 import numpy as np
 
 
-def noise_reduction_filter(data, std_threshold=1.5, multiCh=True):
+def noise_reduction_filter(data, sample_rate, std_threshold=1.5, multiCh=True):
 
     reduced_noise_data = np.zeros_like(data)
 
     if not multiCh:
         reduced_noise_data = nr.reduce_noise(
             y=data,
-            sr=array_config.sample_rate,
+            sr=sample_rate,
             stationary=True,  # stationary noise reduction
             freq_mask_smooth_hz=2000,  # default is 500Hz
             time_mask_smooth_ms=1000,  # default is 50ms

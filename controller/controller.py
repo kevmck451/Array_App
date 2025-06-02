@@ -1,25 +1,25 @@
 
 
-from Application.engine.array.AudioStreamSimulator import AudioStreamSimulator
-from Application.engine.array.external_play import External_Player
-from Application.engine.filters.audio import Audio
-from Application.engine.beamform.beamform import Beamform
-from Application.engine.filters.processor import Processing
-from Application.engine.detectors.pca_calculator import PCA_Calculator
-from Application.engine.detectors.detector import Detector
-from Application.engine.detectors.anomaly_filter import Anomaly_Filter
-from Application.engine.detectors.heatmap import Heatmap
-from Application.engine.detectors.heatmap import generate_full_heatmap
-from Application.engine.calibration_parallel import Calibration_All
+from engine.array.AudioStreamSimulator import AudioStreamSimulator
+from engine.array.external_play import External_Player
+from engine.filters.audio import Audio
+from engine.beamform.beamform import Beamform
+from engine.filters.processor import Processing
+from engine.detectors.pca_calculator import PCA_Calculator
+from engine.detectors.detector import Detector
+from engine.detectors.anomaly_filter import Anomaly_Filter
+from engine.detectors.heatmap import Heatmap
+from engine.detectors.heatmap import generate_full_heatmap
+from engine.calibration_parallel import Calibration_All
 
-from Application.controller.detector_log import Detector_Log
-from Application.controller.heatmap_log import Heatmap_Log
-from Application.controller.temp_log import Temp_Log
-from Application.controller.event_states import Event
-from Application.controller.event_states import State
-from Application.controller.settings_log import Settings_Log
+from controller.detector_log import Detector_Log
+from controller.heatmap_log import Heatmap_Log
+from controller.temp_log import Temp_Log
+from controller.event_states import Event
+from controller.event_states import State
+from controller.settings_log import Settings_Log
 
-from Application.gui.human_op_mode import Human_Op_Mode_Window
+from gui.human_op_mode import Human_Op_Mode_Window
 
 from dataclasses import asdict
 from datetime import datetime
@@ -63,7 +63,7 @@ class Controller:
         self.beamforming_thread = None
         self.beamform_running = False
 
-        self.processor = Processing()
+        self.processor = Processing(self.array_config.sample_rate)
         self.processor_thread = None
         self.processor_running = False
 

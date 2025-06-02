@@ -1,10 +1,10 @@
 
-from Application.gui.window_main import Main_Window
-from Application.controller.controller import Controller
-from Application.engine.array.AudioStream import Mic_Array
-from Application.engine.temp_sensor.client import Sender_Client
-from Application.engine.server.server import Server
-from Application.gui.array_selector import get_array_selection
+from gui.window_main import Main_Window
+from controller.controller import Controller
+from engine.array.AudioStream import Mic_Array
+from engine.temp_sensor.client import Sender_Client
+from engine.server.server import Server
+from gui.array_selector import get_array_selection
 
 
 

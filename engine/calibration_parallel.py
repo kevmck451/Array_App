@@ -1,7 +1,7 @@
-from Application.engine.beamform.beamform import Beamform
-from Application.engine.filters.processor import Processing
-from Application.engine.detectors.pca_calculator import PCA_Calculator
-from Application.engine.detectors.detector import Detector
+from engine.beamform.beamform import Beamform
+from engine.filters.processor import Processing
+from engine.detectors.pca_calculator import PCA_Calculator
+from engine.detectors.detector import Detector
 
 import queue
 import numpy as np
