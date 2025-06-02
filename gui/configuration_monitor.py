@@ -24,12 +24,12 @@ main_font_size = 18 #26
 large_font_size = 57
 button_font_size = 15
 
-main_window_icon = base_path('Application/docs/app_logo.png')
-car_icon = base_path('Application/docs/car.png')
-drone_icon = base_path('Application/docs/drone.png')
-generator_icon = base_path('Application/docs/generator.png')
-plane_icon = base_path('Application/docs/plane.png')
-tank_icon = base_path('Application/docs/tank.png')
+main_window_icon = base_path('Array_App/docs/app_logo.png')
+car_icon = base_path('Array_App/docs/car.png')
+drone_icon = base_path('Array_App/docs/drone.png')
+generator_icon = base_path('Array_App/docs/generator.png')
+plane_icon = base_path('Array_App/docs/plane.png')
+tank_icon = base_path('Array_App/docs/tank.png')
 
 detector_canvas_width = int(560*1.17)
 detector_canvas_height = int(460*1.1)

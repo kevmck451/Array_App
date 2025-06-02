@@ -8,22 +8,19 @@ from gui.array_selector import get_array_selection
 
 
 
-# ssh -L 7654:192.168.1.201:2048 admin@192.168.1.1
-
-
 if __name__ == "__main__":
 
     selection, app_device = get_array_selection()
 
     if selection == 'RECT':
-        from Application.engine.array import array_config_RECT as array_config
-    else: from Application.engine.array import array_config_LINE as array_config
+        from engine.array import array_config_RECT as array_config
+    else: from engine.array import array_config_LINE as array_config
 
     if app_device == 'mac':
-        from Application.gui import configuration as device_config
+        from gui import configuration as device_config
     elif app_device == 'pi':
-        from Application.gui import configuration_pi as device_config
-    else: from Application.gui import configuration_monitor as device_config
+        from gui import configuration_pi as device_config
+    else: from gui import configuration_monitor as device_config
 
     temp_sensor = Sender_Client(name='macbook')
     audio_realtime = Mic_Array(array_config)

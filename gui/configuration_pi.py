@@ -26,15 +26,15 @@ main_font_size = 8 #26
 large_font_size = 20
 button_font_size = 8
 
-main_window_icon = base_path('Application/docs/app_logo.png')
-playing_icon_filepath = base_path('docs/playing icon s.png')
-playing_icon_s_filepath = base_path('docs/playing icon ss.png')
-start_icon_filepath = base_path('docs/start icon s.png')
-stop_icon_filepath = base_path('docs/stop icon s.png')
-pause_icon_filepath = base_path('docs/pause icon s.png')
-load_icon_filepath = base_path('docs/load icon s.png')
-settings_icon_filepath = base_path('docs/settings icon s.png')
-reset_icon_filepath = base_path('docs/reset icon s.png')
+main_window_icon = base_path('Array_App/docs/app_logo.png')
+playing_icon_filepath = base_path('Array_App/docs/playing icon s.png')
+playing_icon_s_filepath = base_path('Array_App/docs/playing icon ss.png')
+start_icon_filepath = base_path('Array_App/docs/start icon s.png')
+stop_icon_filepath = base_path('Array_App/docs/stop icon s.png')
+pause_icon_filepath = base_path('Array_App/docs/pause icon s.png')
+load_icon_filepath = base_path('Array_App/docs/load icon s.png')
+settings_icon_filepath = base_path('Array_App/docs/settings icon s.png')
+reset_icon_filepath = base_path('Array_App/docs/reset icon s.png')
 
 detector_canvas_width = 560
 detector_canvas_height = 460

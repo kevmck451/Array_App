@@ -1,5 +1,5 @@
 
-
+from controller.event_states import Event
 
 
 
@@ -10,7 +10,7 @@ import subprocess
 from PIL import Image
 import sys
 
-from Application.controller.event_states import Event
+
 
 
 
