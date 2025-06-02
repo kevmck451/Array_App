@@ -1,9 +1,13 @@
 
+from Application.engine.detectors.anomaly_filter import Anomaly_Filter
 
-import numpy as np
-from matplotlib.figure import Figure
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.figure import Figure
 from PIL import Image
+import pandas as pd
+import numpy as np
+import glob
+import os
 import io
 
 
@@ -11,6 +15,7 @@ class Heatmap:
     def __init__(self, max_time_steps=120):
         self.max_time_steps = max_time_steps
         self.anomaly_matrix = None
+        self.max_value_seen_global = 0
         self.max_value_seen = 0
         self.current_thetas = []
         self.smoothing_window = 3
@@ -19,7 +24,7 @@ class Heatmap:
         self.matrix_filled_once = False
         self.raw_input_buffer = []
 
-    def update(self, thetas, values):
+    def update(self, thetas, values, max_value_seen_setting='global'):
         if len(thetas) != len(values):
             raise ValueError("Length of thetas and values must match")
 
@@ -75,9 +80,13 @@ class Heatmap:
         else:
             self.should_log = False
 
-        self.max_value_seen = max(self.max_value_seen, np.max(new_row))
+        self.max_value_seen_global = max(self.max_value_seen, np.max(smoothed_row))
+        if max_value_seen_setting == 'global':
+            self.max_value_seen = self.max_value_seen_global
+        elif max_value_seen_setting == 'local':
+            self.max_value_seen = np.max(self.anomaly_matrix)
 
-    def render_heatmap_image(self, width=350, height=280):
+    def render_heatmap_image(self, cmap, vert_max, scale_factor=1, width=550, height=440):
         if self.anomaly_matrix is None or self.anomaly_matrix.shape[0] == 0:
             return None
 
@@ -88,12 +97,29 @@ class Heatmap:
         if self.anomaly_matrix is None:
             return None
 
-        vmax = self.max_value_seen if self.max_value_seen > 0 else 1
+        # vert_max ranges from 1 to 200
+        sensitivity = int(vert_max)
+
+        # prevent divide-by-zero or overflow
+        if self.max_value_seen <= 0:
+            vmax = 1
+        else:
+            # Higher sensitivity lowers vmax (more sensitive to lower values)
+            # Lower sensitivity raises vmax (darker image, only strong stuff visible)
+            # Map 1–200 to a scale where 100 means normal, <100 is more cutoff, >100 is more exposure
+            scale = (100 / sensitivity) ** scale_factor
+            vmax = self.max_value_seen * scale
+
+        # cubehelix # hot # inferno # gist_heat # bone # gist_earth # gnuplot2  # viridis
+        if cmap == "Visual 1": cmap = 'gnuplot2'
+        elif cmap == "Visual 2": cmap = 'cubehelix'
+        elif cmap == "Visual 3": cmap = 'inferno'
+        else: cmap = 'hot'
 
         ax.imshow(
             self.anomaly_matrix,
             aspect='auto',
-            cmap='hot', # inferno # gist_heat # bone # gist_earth # gnuplot2 # cubehelix # viridis
+            cmap=cmap,
             vmin=0,
             vmax=vmax,
             origin='upper',
@@ -101,12 +127,23 @@ class Heatmap:
             extent=(0, len(self.current_thetas), 0, self.max_time_steps)
         )
 
-        ax.set_xticks(np.arange(len(self.current_thetas)) + 0.5)
-        ax.set_xticklabels(self.current_thetas, rotation=45, fontsize=6)
-        ax.set_yticks([])
+        tick_positions = np.arange(len(self.current_thetas)) + 0.5
+        ax.set_xticks(tick_positions)
+        ax.set_xticklabels(
+            self.current_thetas,
+            fontsize=6,
+            color='white',
+            va='top'
+        )
+        ax.tick_params(axis='x', colors='white', direction='in', pad=-10, length=0)
+
+        ax.set_yticks(np.linspace(0, self.max_time_steps, 10))  # or any number of horizontal divisions
+        ax.xaxis.grid(True, which='both', color='white', linewidth=0.3, alpha=0.04)
+        ax.yaxis.grid(False)
 
         fig.tight_layout(pad=0)
-        ax.axis('off')
+        # ax.axis('off')
+        ax.tick_params(left=False, bottom=False, labelleft=False)
         fig.subplots_adjust(left=0, right=1, top=1, bottom=0)
 
         buf = io.BytesIO()
@@ -118,3 +155,67 @@ class Heatmap:
 
         return image
 
+
+def generate_full_heatmap(folder_path, cmap, vert_max, scale_factor):
+
+    csv_files = glob.glob(os.path.join(folder_path, "*.csv"))
+
+    for csv_path in csv_files:
+        df = pd.read_csv(csv_path)
+
+        timestamp_col = None
+        if 'Timestamp' in df.columns:
+            timestamp_col = df['Timestamp']
+            df = df.drop(columns=['Timestamp'])
+
+        thetas = list(df.columns)
+        values = df.to_numpy()
+
+        base, _ = os.path.splitext(csv_path)
+        filename = os.path.basename(csv_path)
+        name_only, _ = os.path.splitext(filename)
+        base_raw = os.path.join(folder_path, f"heatmap_raw_{name_only}")
+        base_filtered = os.path.join(folder_path, f"heatmap_filtered_{name_only}")
+
+        # --- Unfiltered heatmap ---
+        heatmap_raw = Heatmap(max_time_steps=len(df))
+        for row in values:
+            heatmap_raw.update(thetas, row.tolist(), max_value_seen_setting='global')
+
+        height = int((len(df) / 120) * 440)
+        image_raw = heatmap_raw.render_heatmap_image(
+            cmap=cmap,
+            vert_max=vert_max,
+            scale_factor=scale_factor,
+            width=550,
+            height=height
+        )
+
+        if image_raw:
+            image_raw.save(base_raw + ".png")
+
+
+        # --- Filtered heatmap ---
+        anomaly_filter = Anomaly_Filter()
+        heatmap_filtered = Heatmap(max_time_steps=len(df))
+
+        for row in values:
+            anomaly_list = anomaly_filter.process(row.tolist())
+            heatmap_filtered.update(thetas, anomaly_list, max_value_seen_setting='global')
+
+        image_filtered = heatmap_filtered.render_heatmap_image(
+            cmap=cmap,
+            vert_max=vert_max,
+            scale_factor=scale_factor,
+            width=550,
+            height=height
+        )
+
+        if image_filtered:
+            image_filtered.save(base_filtered + ".png")
+
+        if heatmap_filtered.anomaly_matrix is not None:
+            df_filtered = pd.DataFrame(heatmap_filtered.anomaly_matrix.astype(int), columns=thetas)
+            if timestamp_col is not None:
+                df_filtered.insert(0, 'Timestamp', timestamp_col)
+            df_filtered.to_csv(base + "_filtered.csv", index=False)

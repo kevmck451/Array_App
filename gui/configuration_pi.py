@@ -8,28 +8,33 @@ def base_path(relative_path):
 # Main App Settings
 window_title = 'University of Memphis Acoustic'
 
-window_width = 1460 # 1400 # 3200 1400
-window_height = 910 # 800  # 1200 800
+device_type = 'pi'
+
+window_width = 1010 # 990
+window_height = 510 # 490
 min_window_width = window_width
 min_window_height = window_height
-x_pad_main = 2
-y_pad_main = 2
-x_pad_1 = 10
-y_pad_1 = 10
-x_pad_2 = 10
-y_pad_2 = 10
+x_pad_main = 1
+y_pad_main = 1
+x_pad_1 = 3
+y_pad_1 = 3
+x_pad_2 = 3
+y_pad_2 = 3
 main_font_style = "default_font"
-small_font_size = 9
-main_font_size = 18 #26
-large_font_size = 54
-button_font_size = 14
+small_font_size = 3
+main_font_size = 8 #26
+large_font_size = 20
+button_font_size = 8
 
 main_window_icon = base_path('Application/docs/app_logo.png')
-car_icon = base_path('Application/docs/car.png')
-drone_icon = base_path('Application/docs/drone.png')
-generator_icon = base_path('Application/docs/generator.png')
-plane_icon = base_path('Application/docs/plane.png')
-tank_icon = base_path('Application/docs/tank.png')
+playing_icon_filepath = base_path('docs/playing icon s.png')
+playing_icon_s_filepath = base_path('docs/playing icon ss.png')
+start_icon_filepath = base_path('docs/start icon s.png')
+stop_icon_filepath = base_path('docs/stop icon s.png')
+pause_icon_filepath = base_path('docs/pause icon s.png')
+load_icon_filepath = base_path('docs/load icon s.png')
+settings_icon_filepath = base_path('docs/settings icon s.png')
+reset_icon_filepath = base_path('docs/reset icon s.png')
 
 detector_canvas_width = 560
 detector_canvas_height = 460
@@ -40,7 +45,7 @@ heatmap_image_height = 440
 classification_horizontal_pad = 5
 
 # Console Settings
-console_x_pad = 5
+console_x_pad = 3
 console_y_pad = 1
 
 console_font_style_small = (main_font_style, small_font_size)
@@ -74,7 +79,7 @@ red_hover_color='#C74343'
 bluelight_fg_color = '#578CD5'
 bluelight_hover_color = '#496FA3'
 
-device_type = 'mac'
+
 
 # Other Colors
 gray_fg_color = '#8F8F8F'
@@ -91,8 +96,8 @@ connected_color = '#2B881A'
 
 # Settings Window
 settings_window_title = 'Experiment Settings'
-settings_window_width = 1200
-settings_window_height = 800
+settings_window_width = 400
+settings_window_height = 400
 settings_min_window_width = 400
 settings_min_window_height = 400
 settings_window_icon_filepath = 'docs/settings window icon.png'
@@ -104,4 +109,4 @@ y_pad_setting = 5
 overlay_threshold_window_title = 'Overlay Threshold Adjustments'
 
 row_weight = 0
-column_weight = 0
+column_weight = 1

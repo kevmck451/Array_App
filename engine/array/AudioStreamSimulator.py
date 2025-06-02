@@ -7,6 +7,7 @@ from Application.engine.filters.audio import Audio
 
 from threading import Thread
 from queue import Queue
+import numpy as np
 import time
 
 
@@ -27,6 +28,14 @@ class AudioStreamSimulator:
         self.stop_flag = False
         self.realtime = True
 
+        self.send_to_external_audio_stream = False
+        self.external_audio_queue = Queue()
+
+        self.record_audio = False
+        self.recorded_chunks = []
+
+        self.save_path = None
+
     def start_stream(self):
         if self.running:
             print("Stream already running. Skipping restart.")
@@ -42,29 +51,18 @@ class AudioStreamSimulator:
                 break
             chunk = self.audio_object.data[:, int(i * self.chunk_size):int((i + 1) * self.chunk_size)]
             self.queue.put(chunk)
+            if self.send_to_external_audio_stream:
+                self.external_audio_queue.put(chunk)
+            if self.record_audio:
+                self.recorded_chunks.append(chunk)
             if self.realtime:
                 time.sleep(self.chunk_size_sec)
+
         self.running = False
         self.stop_flag = False
 
-
-
-if __name__ == '__main__':
-    base_path = '/Users/KevMcK/Dropbox/2 Work/1 Optics Lab/2 FOSSN/Data'
-    filename = 'cars_drive_by_150m'
-    filepath = f'{base_path}/Tests/17_outdoor_testing/{filename}.wav'
-    audio = Audio(filepath=filepath, num_channels=48)
-    chunk_size_seconds = 1
-
-    stream = AudioStreamSimulator(audio, chunk_size_seconds)
-    stream.start_stream()
-    while stream.running:
-        if not stream.queue.empty():
-            print('PROCESSING----------')
-            print(f'Audio Stream Queue Size: {stream.queue.qsize()}')
-            current_audio_data = stream.queue.get()
-            print(f'Current Data Size: {current_audio_data.shape}')
-            print()
-            print('='*40)
-            print()
-        time.sleep(0.5)
+    def save_audio(self):
+        full_audio = np.hstack(self.recorded_chunks)
+        from scipy.io.wavfile import write
+        filepath = f"{self.save_path}/{self.audio_object.name}_calibration.wav"
+        write(filepath, self.audio_object.sample_rate, full_audio.T.astype(np.float32))

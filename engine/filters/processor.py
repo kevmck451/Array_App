@@ -40,6 +40,8 @@ class Processing:
 
         self.queue = Queue()
 
+        self.send_to_external_audio_stream = False
+        self.external_audio_queue = Queue()
 
     def process_data(self, data):
 
@@ -93,6 +95,8 @@ class Processing:
 
         self.queue.put(new_data)
 
+        if self.send_to_external_audio_stream:
+            self.external_audio_queue.put(new_data)
 
 
 
