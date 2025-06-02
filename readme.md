@@ -1,6 +1,6 @@
 # Microphone Array Application
 
-![App Home](docs/app_display.jpg)
+![App Home](Array_App/docs/app_display.jpg)
 
 ##
 
